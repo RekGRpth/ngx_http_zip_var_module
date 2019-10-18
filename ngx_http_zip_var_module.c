@@ -24,7 +24,7 @@ static ngx_int_t ngx_http_zip_var_set_zip_func(ngx_http_request_t *r, ngx_str_t 
 
 static ngx_int_t ngx_http_zip_var_set_unzip_func(ngx_http_request_t *r, ngx_str_t *val, ngx_http_variable_value_t *v) {
     ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "%s", __func__);
-    val->len = *(size_t *)v->data;
+    val->len = ((*(size_t *)v->data) << 48) >> 48;
     ngx_log_debug2(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "%ul ~ %ul", v->len, val->len);
     if (!(val->data = ngx_pnalloc(r->pool, val->len))) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "!ngx_pnalloc"); return NGX_ERROR; }
     switch (uncompress((Bytef *)val->data, &val->len, (const Bytef *)v->data + sizeof(size_t), v->len - sizeof(size_t))) {
